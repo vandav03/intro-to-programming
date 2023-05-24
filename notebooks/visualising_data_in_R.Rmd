@@ -1,0 +1,39 @@
+```{r}
+#plot the number of distinct customers per country using sql queries
+
+#import the library
+library(tidyverse)
+
+#write the SQL query in the past function and store as a variable called query
+query <- paste("
+     select Country,
+        count(distinct CustomerID) as number_unique_customers
+    from online_retail_history
+    group by Country
+    order by 2 desc
+    limit 10",
+    sep= "" )
+#pass your connection and the query to the tbl function and store as a variable
+customers_per_country <-tbl(my_connection, sql(query))
+customers_per_country
+```
+
+```{r}
+#plot a bar chart = ordered by the number of unique customers
+customers_per_country %>%
+  ggplot(aes(x=reorder(Country, -number_unique_customers), y= number_unique_customers)) +
+  geom_bar(stat="identity", color= "black", fill="blue") +
+  xlab("Country") +
+  ylab("Number of unique customers") +
+  ggtitle("Distribution of Countries by Customers")
+```
+```{r}
+#Plot the distribution of best selling products
+
+#write the SQL query in the paste function and store as a variable called query
+query <- paste("
+               ")
+```
+
+
+
