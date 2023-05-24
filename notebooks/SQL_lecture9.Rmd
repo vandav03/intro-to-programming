@@ -1,0 +1,95 @@
+```{r}
+#connecting to a database that we have currently stored in our data folder
+
+library(DBI)
+
+filename<- "../data/prod_sample.db"
+my_connection<- dbConnect(RSQLite::SQLite(),
+                          dbname = filename)
+my_connection
+```
+```{sql connection =my_connection}
+/* sql query to view the first ten rows of the online_retail_history table */
+select *
+  from stock_description
+limit 5
+```
+```{sql connection=my_connection}
+select count(*) as number_of_orders
+from stock_description
+
+```
+```{sql connection=my_connection}
+/*average price of product */
+select avg(price) as avg_price
+from online_retail_history
+where country="Germany"
+```
+
+```{sql connection=my_connection}
+/* min price of product sold */
+select min(price) as min_price
+from online_retail_history
+where country="Germany"
+```
+```{sql connection=my_connection}
+/* calculate the max price */
+select max(price) as max_price
+from online_retail_history
+where country="Germany"
+
+```
+```{sql connection=my_connection}
+select distinct country from online_retail_history
+```
+```{sql connection=my_connection}
+
+/*stock code of the most expensive item sold in Germany*/
+select distinct StockCode
+from online_retail_history
+where country="Germany"
+and Price = 599.5
+```
+```{sql connection=my_connection}
+
+/*description of the most expensive item sold in Germany*/
+select distinct Description
+from stock_description
+where StockCode="M"
+```
+```{sql connection=my_connection}
+/*Identify the Top 10 Countries that have the highest average Price of items sold*/
+select Country,
+       avg(price)as avg_price
+from online_retail_history
+group by Country
+order by 2 desc
+limit 10
+```
+```{sql connection = my_connection}
+/* write a sql query that identifies the country with the most customers */
+select Country,
+       count(distinct CustomerID) as num_customers
+from online_retail_history
+group by Country
+order by 2 desc
+limit 1
+```
+```{sql connection=my_connection}
+/* write a sql query that identifies customers and their total spend */
+select CustomerID,
+      sum(quantity * price) as total_spend
+from online_retail_history
+group by CustomerID
+order by 2 desc
+```
+```{sql connection=my_connection}
+/* write a sql query that identifies customers and their total spend */
+select CustomerID,
+      sum(quantity * price) as total_spend
+from online_retail_history
+where CustomerID is not null
+/* NULL = one that has been left blank during record creation*/
+group by CustomerID
+order by 2 desc
+```
