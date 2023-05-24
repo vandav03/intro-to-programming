@@ -1,0 +1,80 @@
+```{r}
+# 1. How many rows of data does the online_retail_historytable contain?Hint: Use Count
+#2. How many rows of data does the stock_descriptiontable contain?Hint: Use Count
+#3. When was the first and last invoice?Hint: Use Min and Max4. How much is the average price of goods sold in the United Kingdom?Hint: Use Average  and where
+```
+
+```{r}
+#connecting to a database that we have currently stored in our data folder
+
+library(DBI)
+
+filename<- "../data/prod_sample.db"
+my_connection<- dbConnect(RSQLite::SQLite(),
+                          dbname = filename)
+my_connection
+```
+```{sql connection=my_connection}
+select count(*) as number_rows
+from online_retail_history
+```
+
+```{sql connection=my_connection}
+select count(*) as number_rows
+from stock_description
+```
+
+```{sql connection=my_connection}
+/* min price of product sold */
+select min(price) as min_price
+from online_retail_history
+```
+```{sql connection=my_connection}
+/* calculate the max price */
+select max(price) as max_price
+from online_retail_history
+
+```
+
+```{sql connection=my_connection}
+/*average price of product */
+select avg(price) as avg_price_in_UK
+from online_retail_history
+where country= "United Kingdom"
+```
+```{r}
+#1. How many invoices does the online_retail_historytable contain?Hint: Use Count and Distinct
+#2. How many different types of stocks did the customers purchase?Hint: Use Count and Distinct
+#3. How many Stocks does the stock_description table contain?Hint: Use Count and distinctAny idea why they would be different?
+#4. How many Stocks have ? in the Description?Hint: Use count and where5. How many Invoices have a negative quantity or a negative price?Hint: Use count andwhere
+```
+
+```{sql connection=my_connection}
+/* 1*/
+select count(distinct Invoice) as number_of_invoice
+from online_retail_history
+```
+```{sql connection=my_connection}
+/* 2 */
+select count(distinct StockCode) as number_stock_types
+from online_retail_history
+```
+```{sql connection=my_connection}
+/* 3 */
+select count(distinct StockCode) as number_stock
+from stock_description
+```
+```{sql connection=my_connection}
+/* 4 */
+select count(distinct StockCode) as number_stock
+from stock_description
+where Description = "?"
+```
+```{sql connection=my_connection}
+/* 5*/
+select count(distinct Invoice) as number_of_invoice
+from online_retail_history
+where quantity <0 or price <0
+```
+
+
