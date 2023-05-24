@@ -1,0 +1,114 @@
+```{r}
+#read the csv file and save as a variable called heart_data
+setwd("/Users/vandavinecka/Desktop/Uni/intro-to-programming/notebooks")
+heart_data <- read.csv("../data/heart_attack_data.csv")
+```
+
+```{r}
+#preview the data
+head(heart_data)
+```
+
+```{r} 
+#shape of the data (number of rows and columns)
+dim(heart_data)
+```
+
+```{r}
+str(heart_data)
+```
+```{r}
+heart_data$sex <-factor(heart_data$sex)
+heart_data$cp <-factor(heart_data$cp)
+heart_data$fbs <-factor(heart_data$fbs)
+heart_data$restecg <-factor(heart_data$restecg)
+heart_data$exang <-factor(heart_data$exang)
+heart_data$target <-factor(heart_data$target)
+summary(heart_data)
+```
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#VISUALISING DATA IN R 
+# name_of_data_frame%>%
+#ggplot(mapping = aes([MAPPING])) + [GEOM_FUNCTION] ()
+
+heart_data%>%
+  ggplot(aes(x=age, y=chol)) + geom_point(na.rm= TRUE) + 
+  ggtitle("Relationship between Age and Chol")
+
+```
+```{r}
+#plot a scatter plot showing the relationship age vs. chol
+heart_data %>%
+  ggplot(aes(x=age,y=chol)) +
+  geom_point(aes(color = sex), na.rm = TRUE) +
+ggtitle("Relationship between Age and Chol")
+```
+```{r}
+heart_data<- heart_data%>%
+  mutate(target = ifelse(target == 0, "No heart disease","heart disease"))
+
+unique(heart_data$target)
+```
+
+```{r}
+heart_data %>%
+  ggplot(aes(x=age,y=chol)) +
+  geom_point(aes(color = target), na.rm = TRUE) +
+ggtitle("Relationship between Age and Chol")
+```
+```{r}
+heart_data%>%
+  ggplot(aes(x=age)) +
+  geom_histogram() +
+  ggtitle ("Distribution of age")
+```
+```{r}
+#adjusting the bin width and filling with color of the choice
+heart_data%>%
+  ggplot(aes(x=age)) +
+  geom_histogram(binwidth = 5,fill="yellow", color= "red") +
+  ggtitle ("Histogram with bin size = 5")
+```
+```{r}
+#store as a variable
+gender_dist<- heart_data %>%
+  count(sex)
+
+gender_dist
+```
+```{r}
+# plotting a bar chart
+heart_data%>%
+  ggplot(aes(x= sex)) + 
+  geom_bar() + 
+  ggtitle("Distributtion of Gender")
+```
+```{r}
+heart_data%>%
+  ggplot(aes(x= sex)) + 
+  geom_bar(color ="pink", fill="blue") + 
+  xlab("Gender")+ ylab("Frequency") +
+  ggtitle("Distributtion of Gender")
+```
+```{r}
+# ordered by the frequency
+cp_dist<- heart_data%>%
+  count(cp)
+
+cp_dist %>%
+ggplot(aes(x=reorder(cp,-n), y=n)) + 
+  geom_bar(stat ="identity", color="black",fill="pink") + 
+  xlab("Chest pain")+ ylab("Frequency") +
+  ggtitle("Distributtion of Chest Pain Type")
+#theme(plot.title= element_text(color="blue", size=20, face="bold.italic",hjust = 0.5))
+```
+
+```{r}
+
+```
+
+

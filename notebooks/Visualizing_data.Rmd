@@ -1,0 +1,118 @@
+
+```
+title: "Visualising Data"
+```
+
+```{r}
+#read the csv file and save as a variable called heart_data
+setwd("/Users/vandavinecka/Desktop/Uni/intro-to-programming/notebooks")
+
+heart_data<- read.csv("../data/heart_attack_data.csv")
+```
+
+#head function to preview the data
+```{r}
+head(heart_data)
+```
+
+#check the shape of the data (number of rows and columns)
+```{r}
+dim(heart_data)
+```
+```{r}
+#check the structure  of the data (different  data type of the DataFrame)
+str(heart_data)
+```
+
+#Categorise the following variables
+```{r}
+heart_data$sex <-factor(heart_data$sex)
+heart_data$cp <-factor(heart_data$cp)
+heart_data$fbs <-factor(heart_data$fbs)
+heart_data$restecg <-factor(heart_data$restecg)
+heart_data$exang <-factor(heart_data$exang)
+heart_data$target <-factor(heart_data$target)
+summary(heart_data)
+```
+```{r}
+str(heart_data)
+```
+```{r}
+#install.packages ("tidyverse") - 7 packages of Rcode
+library(tidyverse )
+```
+#visualising data in R - THE SYNTEX
+#name_of_data_frame%>%
+#ggplot(mapping = aes([MAPPING])) + [GEOM_FUNCTION] ()
+#To create  a line graph  with ggplot() + geom_line()function.
+#To create  a scatter  plot, we use ggplot() + geom_point()
+#To create  a histogram,  we use ggplot() + geom_histogram()
+#To create  a bar chart  we use ggplot() + geom_bar()
+#To create  a boxplot,  we use ggplot() + geom_boxplot()
+
+```{r}
+#start with defining the x and y axis
+#look at the relationship between age and chol
+
+heart_data%>%
+  ggplot(aes(x=age, y=chol))
+  
+```
+```{r}
+heart_data%>%
+  ggplot(aes(x=age, y=chol)) + 
+  geom_point(na.rm = TRUE)
+```
+```{r}
+#aes -Aesthetic mapping
+heart_data%>%
+  ggplot(aes(x=age, y=chol)) + 
+  geom_point(aes(color =sex),na.rm = TRUE)+
+# add title for the scatter plot
+ggtitle("Age vs.Chol by Gender")
+```
+```{r}
+#optional: if you want to replace 0 and 1 with "female and male"
+
+heart_data<- heart_data%>%
+  mutate(sex = ifelse(sex == 0, "Female","Male"))
+
+unique(heart_data$sex)
+```
+
+```{r}
+heart_data%>%
+  ggplot(aes(x=age, y=chol)) + 
+  geom_point(aes(color =sex),na.rm = TRUE)+
+# add title for the scatter plot
+ggtitle("Age vs.Chol by Gender")
+```
+```{r}
+#Visualize the relationship between age,chol and heart disease(target)
+heart_data%>%
+  ggplot(aes(x = age,y = chol)) +
+  geom_point(aes(color = target),na.rm = TRUE) +
+  ggtitle("Relationship between age,chol and heart disease")
+```
+
+```{r}
+heart_data<- heart_data%>%
+  mutate(target = ifelse(target == 0, "No heart disease","heart disease"))
+
+unique(heart_data$target)
+```
+```{r}
+heart_data%>%
+  ggplot(aes(x = age,y = chol)) +
+  geom_point(aes(color = target),na.rm = TRUE) +
+  ggtitle("Relationship between age,chol and heart disease")
+```
+```{r}
+#adjust the color of the histogram
+heart_data%>%
+  ggplot(aes(x=age)) +
+  geom_histogram(birwidth=5, fill= "blue", color="pink",aplha=0.9) +
+  ggtitle("Histogram with bin size = 5") +
+  theme(plot.title = element_text(size=15))
+```
+

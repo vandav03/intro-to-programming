@@ -1,0 +1,48 @@
+title: "Using SQL to Query Data"
+
+```{r}
+#connecting to a database that we have currently stored in our data folder
+
+library(DBI)
+
+filename<- "../data/prod_sample.db"
+my_connection<- dbConnect(RSQLite::SQLite(),
+                          dbname = filename)
+my_connection
+```
+```{r}
+#check what tables exist in this database
+dbListTables(my_connection)
+#we have two tables that exist in our database
+```
+
+```{sql connection=my_connection}
+/* sql query to view the first ten rows of the online_retail_history table - be sure to pass in the connection */
+select *
+from online_retail_history
+limit 10
+```
+```{sql connection=my_connection}
+/* write a sql query that left joins the stock_description table to the online_retail_history table  */
+select t1.*,
+       t2.Description
+from online_retail_history t1
+left join stock_description t2 on t1.StockCode = t2.StockCode
+```
+```{sql connection=my_connection}
+/* 5.1 How many unique products has this online gift shop sold? */
+select count(distinct StockCode) as number_stock_types
+from online_retail_history
+```
+```{sql connection=my_connection}
+/* 5.2 What are the top 20 best-selling products in Germany? */
+select t2.Description,
+      sum(t1.quantity) as total_quantity
+from online_retail_history as t1
+join stock_description as t2 on t1.StockCode = t2.StockCode
+where Country = "Germany" and description NOT IN ("?", "POSTAGE")
+/* <> = not equal. ...and description <> "?" */
+group by t2.Description
+order by total_quantity desc
+limit 20
+```

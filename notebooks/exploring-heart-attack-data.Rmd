@@ -1,0 +1,97 @@
+#assign a variable in Rvar_name<-value
+
+```{r}
+#this is the location of the script
+setwd("/Users/vandavinecka/Desktop/Uni/intro-to-programming/notebooks")
+
+heart_data<- read.csv("../data/heart_attack_data.csv", header=TRUE)
+```
+
+
+```{r}
+head(heart_data)
+# head function to print the first 6 rows of data
+```
+
+```{r}
+
+class (heart_data)
+#get info about the type of variable
+
+```
+
+```{r}
+
+dim(heart_data)
+#shape of the data (how many rows,columns you have in the data)
+
+```
+
+
+```{r}
+str(heart_data)
+#check the structure of the data; different data type of the DataFrame
+#int.(numbers also with points; 3.5)
+```
+```{r}
+#do you see the difference? 5 number summary
+#question:any other columns we could convert to factors?
+heart_data$cp <-factor(heart_data$cp)
+heart_data$sex <-factor(heart_data$sex)
+heart_data$restecg <-factor(heart_data$restecg)
+heart_data$fbs <-factor(heart_data$fbs)
+heart_data$exang <-factor(heart_data$exang)
+heart_data$target <-factor(heart_data$target)
+summary(heart_data)
+#always summaries
+```
+```{r}
+str(heart_data)
+```
+```{r}
+#tells us if the patient has cancer or not –1 means they have cancer and 0 means they do not have cancer.
+#1 summary(heart_data)
+#2 summary(heart_data$target)
+summary(heart_data$target)
+```
+
+```{r}
+#how many male(1)/female (0) do/doesnt havecancer? 
+table(heart_data$sex, heart_data$target)
+```
+```{r}
+#tidying the table and storing as variable
+gender_cancer_dist <-as.data.frame(table(heart_data$sex, heart_data$target))
+names(gender_cancer_dist) <-c("Gender", "Target", "Frequency")
+gender_cancer_dist
+```
+```{r}
+#code to replace 0 and 1s with female and male
+library(dplyr)
+
+gender_cancer_dist <-gender_cancer_dist %>%
+  mutate(Gender = ifelse(Gender == 0, "Female","Male"))
+
+gender_cancer_dist
+```
+
+```{r}
+#convert the 0s in target to no heart attack and 1s to heart attack
+
+gender_cancer_dist <-gender_cancer_dist %>%
+  mutate(Target = ifelse(Target == 0, "no heart attack","heart attack"))
+
+gender_cancer_dist
+```
+```{r}
+#visualizing the data
+#install.packages("tidyverse")
+
+#These lines need to be executed every time you load R
+library("tidyverse")
+
+ggplot(gender_cancer_dist, aes(x=Gender, y=Frequency, fill=Target)) + 
+  geom_col() + 
+  labs(title="Distribution of Patients with Heart Disease")
+
+```
